@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
+import PasswordMismatchError from './exceptions/PasswordMismatchException';
 
 @Injectable()
 export class UserService {
   create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+    const { username, password, passwordConfirm } = createUserDto;
+    if (password != passwordConfirm) throw new PasswordMismatchError();
+    const newUser: User = { username, password };
+    return newUser;
   }
 
   findAll() {
