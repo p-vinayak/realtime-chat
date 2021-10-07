@@ -7,8 +7,8 @@ import LoginUserDto from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import InvalidUsernameOrPasswordException from './exceptions/InvalidUsernameOrPasswordException';
-import PasswordMismatchError from './exceptions/PasswordMismatchException';
-import UserAlreadyExistsError from './exceptions/UserAlreadyExistsException';
+import PasswordMismatchException from './exceptions/PasswordMismatchException';
+import UserAlreadyExistsException from './exceptions/UserAlreadyExistsException';
 
 @Injectable()
 export class UserService {
@@ -25,9 +25,9 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     const { username, password, passwordConfirm } = createUserDto;
-    if (password != passwordConfirm) throw new PasswordMismatchError();
+    if (password != passwordConfirm) throw new PasswordMismatchException();
     const existingUser = await this.findByUsername(username);
-    if (existingUser) throw new UserAlreadyExistsError();
+    if (existingUser) throw new UserAlreadyExistsException();
     const newUser = new User();
     newUser.username = username;
     newUser.password = await this.hashPassword(password);
