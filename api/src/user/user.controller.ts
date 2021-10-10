@@ -8,11 +8,13 @@ import {
   Delete,
   UsePipes,
   ValidationPipe,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import LoginUserDto from './dto/login-user.dto';
+import { Request } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -26,12 +28,14 @@ export class UserController {
 
   @Post('/login')
   @UsePipes(new ValidationPipe())
-  login(@Body() loginUserDto: LoginUserDto) {
-    return this.userService.login(loginUserDto);
+  async login(@Req() req: Request, @Body() loginUserDto: LoginUserDto) {
+    const user = await this.userService.login(loginUserDto);
+    req.session.user = user;
+    return req.session.user;
   }
 
   @Get()
-  findAll() {
+  findAll(@Req() req: Request) {
     return this.userService.findAll();
   }
 

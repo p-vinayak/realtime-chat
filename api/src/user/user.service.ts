@@ -24,23 +24,23 @@ export class UserService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    const { username, password, passwordConfirm } = createUserDto;
-    if (password != passwordConfirm) throw new PasswordMismatchException();
-    const existingUser = await this.findByUsername(username);
+    if (createUserDto.password != createUserDto.passwordConfirm)
+      throw new PasswordMismatchException();
+    const existingUser = await this.findByUsername(createUserDto.username);
     if (existingUser) throw new UserAlreadyExistsException();
     const newUser = new User();
-    newUser.username = username;
-    newUser.password = await this.hashPassword(password);
+    newUser.username = createUserDto.username;
+    newUser.password = await this.hashPassword(createUserDto.password);
     return this.userRepository.save(newUser);
   }
 
-  async login(loginUserDto: LoginUserDto) {
-    const { username, password } = loginUserDto;
-    const user = await this.findByUsername(username);
+  async login(loginUserDto: LoginUserDto): Promise<Partial<User>> {
+    const user = await this.findByUsername(loginUserDto.username);
     if (!user) throw new InvalidUsernameOrPasswordException();
-    if (!(await compare(password, user.password)))
+    if (!(await compare(loginUserDto.password, user.password)))
       throw new InvalidUsernameOrPasswordException();
-    return user;
+    const { id, username } = user;
+    return { id, username };
   }
 
   findAll() {
