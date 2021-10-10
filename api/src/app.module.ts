@@ -5,6 +5,7 @@ import { getConnectionOptions } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
+import { RoomModule } from './room/room.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UserModule } from './user/user.module';
       useFactory: async () =>
         Object.assign(await getConnectionOptions(), { autoLoadEntities: true }),
     }),
+    RoomModule,
   ],
   controllers: [AppController],
   providers: [AppService],
