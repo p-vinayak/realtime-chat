@@ -34,13 +34,12 @@ export class UserService {
     return this.userRepository.save(newUser);
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<Partial<User>> {
+  async login(loginUserDto: LoginUserDto) {
     const user = await this.findByUsername(loginUserDto.username);
     if (!user) throw new InvalidUsernameOrPasswordException();
     if (!(await compare(loginUserDto.password, user.password)))
       throw new InvalidUsernameOrPasswordException();
-    const { id, username } = user;
-    return { id, username };
+    return user;
   }
 
   findAll() {

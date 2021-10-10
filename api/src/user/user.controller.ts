@@ -22,15 +22,17 @@ export class UserController {
 
   @Post()
   @UsePipes(new ValidationPipe())
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async create(@Req() req: Request, @Body() createUserDto: CreateUserDto) {
+    const { id, username } = await this.userService.create(createUserDto);
+    req.session.user = { id, username };
+    return req.session.user;
   }
 
   @Post('/login')
   @UsePipes(new ValidationPipe())
   async login(@Req() req: Request, @Body() loginUserDto: LoginUserDto) {
-    const user = await this.userService.login(loginUserDto);
-    req.session.user = user;
+    const { id, username } = await this.userService.login(loginUserDto);
+    req.session.user = { id, username };
     return req.session.user;
   }
 
