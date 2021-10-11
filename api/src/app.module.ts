@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { RoomModule } from './room/room.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { RoomModule } from './room/room.module';
         Object.assign(await getConnectionOptions(), { autoLoadEntities: true }),
     }),
     RoomModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
