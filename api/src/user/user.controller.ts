@@ -13,7 +13,6 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import LoginUserDto from './dto/login-user.dto';
 import { Request } from 'express';
 
 @Controller('user')
@@ -28,16 +27,8 @@ export class UserController {
     return req.session.user;
   }
 
-  @Post('/login')
-  @UsePipes(new ValidationPipe())
-  async login(@Req() req: Request, @Body() loginUserDto: LoginUserDto) {
-    const { id, username } = await this.userService.login(loginUserDto);
-    req.session.user = { id, username };
-    return req.session.user;
-  }
-
   @Get()
-  findAll(@Req() req: Request) {
+  findAll() {
     return this.userService.findAll();
   }
 

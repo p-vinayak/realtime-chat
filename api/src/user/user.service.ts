@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { compare, hash } from 'bcrypt';
+import { hash } from 'bcrypt';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import LoginUserDto from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import InvalidUsernameOrPasswordException from './exceptions/InvalidUsernameOrPasswordException';
 import PasswordMismatchException from './exceptions/PasswordMismatchException';
 import UserAlreadyExistsException from './exceptions/UserAlreadyExistsException';
 
@@ -19,7 +17,7 @@ export class UserService {
     return await hash(password, 10);
   }
 
-  private findByUsername(username: string) {
+  findByUsername(username: string) {
     return this.userRepository.findOne({ username: username });
   }
 
@@ -32,14 +30,6 @@ export class UserService {
     newUser.username = createUserDto.username;
     newUser.password = await this.hashPassword(createUserDto.password);
     return this.userRepository.save(newUser);
-  }
-
-  async login(loginUserDto: LoginUserDto) {
-    const user = await this.findByUsername(loginUserDto.username);
-    if (!user) throw new InvalidUsernameOrPasswordException();
-    if (!(await compare(loginUserDto.password, user.password)))
-      throw new InvalidUsernameOrPasswordException();
-    return user;
   }
 
   findAll() {
