@@ -17,15 +17,18 @@ export class RoomService {
     return this.roomRepository.findOne({ name: roomName });
   }
 
-  async create(createRoomDto: CreateRoomDto, owner: Partial<User>) {
+  async create(createRoomDto: CreateRoomDto, user: Partial<User>) {
     const existingRoom = await this.findByRoomName(createRoomDto.name);
     if (existingRoom) throw new RoomAlreadyExistsException();
+    const owner = new User();
+    owner.id = user.id;
     const newRoom = new Room();
     newRoom.name = createRoomDto.name;
     newRoom.description = createRoomDto.description;
     newRoom.maxUserCount = createRoomDto.maxUserCount;
     newRoom.owner = new User();
     newRoom.owner.id = owner.id;
+    newRoom.users = [owner];
     return this.roomRepository.save(newRoom);
   }
 

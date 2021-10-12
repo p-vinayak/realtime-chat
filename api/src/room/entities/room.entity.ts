@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -24,4 +25,7 @@ export class Room {
   @OneToOne(() => User)
   @JoinColumn()
   owner: User;
+
+  @OneToMany(() => User, (user) => user.room)
+  users: User[];
 }
