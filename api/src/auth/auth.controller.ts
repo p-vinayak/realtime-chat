@@ -8,22 +8,30 @@ import {
   Delete,
   UseGuards,
   Req,
+  HttpCode,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
+import { IsAuthenticatedGuard } from 'src/common/guards/IsAuthenticatedGuard';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { LocalAuthGuard } from './guards/LocalAuthGuard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(LocalAuthGuard)
   @Post('/login')
   login(@Req() req: Request) {
-    req.session.user = req.user;
-    return req.session.user;
+    return req.user;
+  }
+
+  @UseGuards(IsAuthenticatedGuard)
+  @HttpCode(200)
+  @Post('/logout')
+  logout(@Req() req: Request) {
+    req.logOut();
   }
 
   @Post()
