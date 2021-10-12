@@ -22,7 +22,7 @@ export class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
   @UseGuards(IsAuthenticatedGuard)
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ forbidUnknownValues: true }))
   @Post()
   create(@Req() req: Request, @Body() createRoomDto: CreateRoomDto) {
     return this.roomService.create(createRoomDto, req.user);

@@ -20,7 +20,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ forbidUnknownValues: true }))
   async create(@Req() req: Request, @Body() createUserDto: CreateUserDto) {
     const { id, username } = await this.userService.create(createUserDto);
     req.session.user = { id, username };
