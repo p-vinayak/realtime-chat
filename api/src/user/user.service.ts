@@ -13,6 +13,7 @@ export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
+
   private async hashPassword(password) {
     return await hash(password, 10);
   }

@@ -1,15 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
+import { Request } from 'express';
+import { IsAuthenticatedGuard } from 'src/common/guards/IsAuthenticatedGuard';
 
 @Controller('room')
 export class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
+  @UseGuards(IsAuthenticatedGuard)
+  @UsePipes(new ValidationPipe())
   @Post()
-  create(@Body() createRoomDto: CreateRoomDto) {
-    return this.roomService.create(createRoomDto);
+  create(@Req() req: Request, @Body() createRoomDto: CreateRoomDto) {
+    return this.roomService.create(createRoomDto, req.user);
   }
 
   @Get()
